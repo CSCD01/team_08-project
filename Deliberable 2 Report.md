@@ -75,7 +75,7 @@ Work Estimates:
 
 ### Checklist
 
-- [ ] Review/Design - Analyze code and bug, update implementation section with further plans (2019/03/07 - ___)
+- [ ] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - ___)
 - [ ] Acceptance Tests - Write tests for future verification stage
 - [ ] Implementation - Writing and functional test of code
     - [ ] TBD
@@ -102,7 +102,7 @@ Work Estimates:
 
 ### Checklist
 
-- [ ] Review/Design - Analyze code and bug, update implementation section with further plans (2019/03/05 - ___)
+- [ ] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/05 - ___)
 - [ ] Acceptance Tests - Write tests for future verification stage
 - [ ] Implementation - Writing and functional test of code
     - [ ] TBD
