@@ -85,6 +85,9 @@ Work Estimates:
 
 ### Review Notes
 
+* (2020/03/08) Austin and Charmaine successfully recreated issue using Google CalDav servers
+* (2020/03/09) Austin and Julian analyzed code and found changes only had to be made in file "calendar/providers/caldav/calDavCalendar.js", specifically in the calDavCalendar prototype. 
+
 ### Tests Designed
 
 ### Other Developer Commentary
