@@ -9,20 +9,14 @@ This version of the report is a markdown copy. The information should be identic
 
 The team member roles listed here are not “set in stone” and each team member will likely be helping with other tasks if needed. However these roles designate what each member will primarily be working on.
 
-  
+
 
 | Team Member | Role |
-
-
-
+| --- | --- |
 | Charmaine Yung | Documentation and flex developer (will help with both issues and third if time permits) |
-
 | Austin Seto | Working on issue: Calendar Read-Only Bug |
-
 | Julian He | Working on issue: Calendar Read-Only Bug |
-
 | Lintao Yin | Working on issue: Attendee Multiple Copies |
-
 | Mikhail Makarov | Working on issue: Attendee Multiple Copies |
 
   
@@ -33,87 +27,71 @@ The team member roles listed here are not “set in stone” and each team membe
 
 ## Inability to Edit Remote Calendar
 
+|  |  |
+| --- | --- |
 | Bugzilla ID | [315307](https://bugzilla.mozilla.org/show_bug.cgi?id=315307) |
-
 | Title | remote calendar location cannot be edited in edit calendar/calendarProperties |
-
 | Description | The location for saving Lighting calendars always reverts to default when it’s changed. |
-
 | Status | Not Selected (will work on if time permits) |
 
   
 
 ## Calendar Read-Only Permission Bug
 
+|  |  |
+| --- | --- |
 | Bugzilla ID | [1273793](https://bugzilla.mozilla.org/show_bug.cgi?id=1273793) |
-
 | Title | added calendars could be set with "read only option" accordingly to its real permissions |
-
 | Description | When a calendar property is readonly, the UI does not indicate as such, and still allows for editing. The change is not reflected in the backend. |
-
 | Status | Selected |
 
   
 
 ## Attendee List Focus Mismatch
 
+|  |  |
+| --- | --- |
 | Bugzilla ID | [1051572](https://bugzilla.mozilla.org/show_bug.cgi?id=1051572) |
-
 | Title | Attendee Dialog: Focus mismatch when moving in attendee list |
-
 | Description | In the attendee list dialog the selected (aka focused) attendee desyncs where the UI shows a non-selected attendee as selected while the actual selected one does not have the focused styles applied |
-
-| Status | ABANDONED |
+| Status | Abandoned (unable to replicate bug) |
 
   
 
 ## Calendar HTML/CSS Template Improvements
 
+|  |  |
+| --- | --- |
 | Bugzilla ID | [1594335](https://bugzilla.mozilla.org/show_bug.cgi?id=1594335) |
-
 | Title | calMonthGridPrinter.html and calWeekPrinter.html should use \<html:template> and css for align/valign |
-
 | Description | The files mentioned in the title use outdated HTML tags and properties. Update them using modern tags and CSS. |
-
 | Status | Not Selected (not relevant enough to users) |
 
   
 
 ## Allow Access to Resource and Location Calendars
 
+|  |  |
+| --- | --- |
 | Bugzilla ID | [481021](https://bugzilla.mozilla.org/show_bug.cgi?id=481021) |
-
 | Title | Allow easy access to resource and location principals and calendars |
-
 | Description | **This is a new feature that has been requested by a user.** A feature to allow booking/indication of rooms in a building in which an event is taking place. Note that in the description in the link, [Iceowl is another name for Lightning](https://en.wikipedia.org/wiki/Mozilla_software_rebranded_by_Debian#Iceowl). |
-
 | Status | Not Selected (task appears outside the scope of this deliverable, saved for deliverable 3) |
 
   
 
 ## Addresses are duplicated in attendee dialog box
 
+|  |  |
+| --- | --- |
 | Bugzilla ID | [1596941](https://bugzilla.mozilla.org/show_bug.cgi?id=1596941) |
-
 | Title | Addresses are duplicated when entered in the invite attendees dialog |
-
-| Description | Create an event in a calendar that has no email set on it.
-
-Open the invite attendees dialog for the event.
-
-Enter an address in the list on the left and hit enter.
-
-The address appears twice.
-
-Hit enter again, it appears three times, etc. |
-
-| Status | SELECTED |
+| Description | Create an event in a calendar that has no email set on it. Open the invite attendees dialog for the event. Enter an address in the list on the left and hit enter. The address appears twice. Hit enter again, it appears three times, etc. |
+| Status | Selected |
 
   
 
 # Issues Worked On
-
-  
 
 ## Calendar Read-Only Permissions Bug
 Description: [See Above](#calendar-read-only-permission-bug)
@@ -125,8 +103,6 @@ Work Estimates:
 * Verification: 1 hours
 * Delivery: < 1 hours
 
-  
-
 ### Checklist
 - [ ] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - ___)
 - [ ] Acceptance Tests - Write tests for future verification stage
@@ -135,19 +111,17 @@ Work Estimates:
 - [ ] Verification - Run acceptance tests and verify passes
 - [ ] Delivery - Pull Request
 
-  
-
 ### Review Notes
 
-  
+
 
 ### Tests Designed
 
-  
+
 
 ### Other Developer Commentary
 
-  
+
 
 ## Attendee List Focus Mismatch
 Description: [See Above](#attendee-list-focus-mismatch)
@@ -158,9 +132,10 @@ Work Estimates:
 * Implementation: 4 hours
 * Verification: 1 hours
 * Delivery: < 1 hours
+
 ### Checklist
 
--  [X] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/05 - 2020/03/07)
+- [X] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/05 - 2020/03/07)
 - [ ] Acceptance Tests - Write tests for future verification stage
 - [ ] Implementation - Writing and functional test of code
 - [ ] TBD
@@ -169,7 +144,7 @@ Work Estimates:
 
 ### Review Notes
 
-COULD NOT REPLICATE, ABANDONING
+Could not replicate issue, abandoned
 
 ### Tests Designed
 
@@ -179,11 +154,7 @@ We couldn’t replicate the defect, arrows key inputs did not affect the attende
 
 ## Addresses are duplicated in attendee dialog box
 
-  
-
 Description: [See Above](#addresses-are-duplicated-in-attendee-dialog-box)
-
-  
 
 Work Estimates:
 
@@ -202,6 +173,7 @@ Work Estimates:
 - [ ] Delivery - Pull Request
 
 ### Review Notes
+
 Bug appears as stated but also appears when pressing backspace.
 Deleting when one character in attendee entry also creates a new row.
 Bug Confirmed and fix and Acceptance beginning
