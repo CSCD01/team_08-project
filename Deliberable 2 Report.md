@@ -75,10 +75,11 @@ Work Estimates:
 
 ### Checklist
 
-- [ ] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - ___)
-- [ ] Acceptance Tests - Write tests for future verification stage
+- [x] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - 2020/03/08)
+- [ ] Acceptance Tests - Write tests for future verification stage (2020/03/08 - ___)
 - [ ] Implementation - Writing and functional test of code
-    - [ ] TBD
+    - [ ] Pull data regarding user permissions from CalDav server during calendar creation
+    - [ ] Set calendar permissions according to permissions read
 - [ ] Verification - Run acceptance tests and verify passes
 - [ ] Delivery - Pull Request
 
