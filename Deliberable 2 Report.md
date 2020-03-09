@@ -89,8 +89,9 @@ The team member roles listed here are not “set in stone” and each team membe
 | --- | --- |
 | Bugzilla ID | [1596941](https://bugzilla.mozilla.org/show_bug.cgi?id=1596941) |
 | Title | Addresses are duplicated when entered in the invite attendees dialog |
-| Description | Create an event in a calendar that has no email set on it. Open the invite attendees dialog for the event. Enter an address in the list on the left and hit enter. The address appears twice. Hit enter again, it appears three times, etc. |
-| Status | Selected |
+| Description | Create an event in a calendar that has no email set on it. Open the invite attendees dialog for the event. Enter an address in the list on the left and hit enter. The address appears twice. Hit enter again, it appears three times, etc. Seems to be an issue with how it adds elements to the list and how it delets elements in the list. Likely in the event dialog attendees file. |
+| Work Estimate | 10 hours |
+| Status | Selected (relevant to users, simple to test, good to prove understanding of logic) |
 
   
 
@@ -179,7 +180,7 @@ Work Estimates:
 
 Bug appears as stated but also appears when pressing backspace.
 Deleting when one character in attendee entry also creates a new row.
-Bug Confirmed and fix and Acceptance beginning
+Bug Confirmed as such fix and acceptance test writing beginning
 
 ### Tests Designed
 
@@ -191,7 +192,7 @@ Bug Confirmed and fix and Acceptance beginning
 	- Try backspace and delete
 	- Try enter
 	- Try filling out value and enter
-6. Insure no new rows are created
+6. Insure no extra rows are created
 7. Save event, close and reopen, insure no duplicate rows
 8. Attempt to create a new row
 9. Repeat with Network Calendar
