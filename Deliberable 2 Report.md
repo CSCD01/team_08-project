@@ -76,7 +76,7 @@ Work Estimates:
 ### Checklist
 
 - [x] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - 2020/03/08)
-- [ ] Acceptance Tests - Write tests for future verification stage (2020/03/08 - ___)
+- [x] Acceptance Tests - Write tests for future verification stage (2020/03/08 - 2020/03/09)
 - [ ] Implementation - Writing and functional test of code
     - [ ] Pull data regarding user permissions from CalDav server during calendar creation
     - [ ] Set calendar permissions according to permissions read
@@ -90,7 +90,25 @@ Work Estimates:
 
 ### Tests Designed
 
+These are manual tests
+
+#### Pull editable calendar
+
+1. Set up calendar on CalDav server and give user edit permissions
+2. Open Thunderbird Calendar and add previously created calendar using CalDav
+3. Open newly created calendar
+4. Check to see if the local calendar is editable
+
+#### Pull read-only calendar
+
+1. Set up calendar on CalDav server and give user read permissions only
+2. Open Thunderbird Calendar and add previously created calendar using CalDav
+3. Open newly created calendar
+4. Check to see if the local calendar is not editable, it should have a lock symbol or similar to indicate this
+
 ### Other Developer Commentary
+
+(Austin) Regarding automated testing I am not sure how automated tests would be written. What CalDav server would be used? How can we ensure its integrity? I know I definitely wouldn't be using my personal Google account's calendars (what I used to replicate the issue) but I don't know what other CalDav server I would use. 
 
 ## Attendee List Focus Mismatch
 
