@@ -141,6 +141,9 @@ These are manual tests
 
 (Austin) Asked Prantar about testing and was told mock objects could work but would be overkill and manual testing was okay.
 
+Software Modified:
+-provider/caldav/caldavCalendar.js
+
 ## Attendee List Focus Mismatch
 Description: [See Above](#attendee-list-focus-mismatch)
 
