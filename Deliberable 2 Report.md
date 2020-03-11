@@ -165,10 +165,9 @@ Work Estimates:
 ### Checklist
 -  [X] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - 2020/03/07)
 -  [X] Acceptance Tests - Write tests for future verification stage (2020/03/07 - 2020/03/07)
-- [ ] Implementation - Writing and functional test of code (2020/03/07 - ____)
-- [ ] TBD
-- [ ] Verification - Run acceptance tests and verify passes
-- [ ] Delivery - Pull Request
+- [X] Implementation - Writing and functional test of code (2020/03/07 - 2020/03/11)
+- [X] Verification - Run acceptance tests and verify passes (2020/03/11 - 2020/03/11)
+- [X] Delivery - Pull Request (2020/03/11 - 2020/03/11)
 
 ### Review Notes
 
