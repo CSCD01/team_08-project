@@ -102,24 +102,44 @@ Work Estimates:
 * Delivery: < 1 hours
 
 ### Checklist
-- [ ] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - ___)
-- [ ] Acceptance Tests - Write tests for future verification stage
-- [ ] Implementation - Writing and functional test of code
-- [ ] TBD
-- [ ] Verification - Run acceptance tests and verify passes
+
+- [x] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - 2020/03/08)
+- [x] Acceptance Tests - Write tests for future verification stage (2020/03/08 - 2020/03/09)
+- [x] Implementation - Writing and functional test of code (2020/03/09 - 2020/03/11)
+    - [x] Pull data regarding user permissions from CalDav server during calendar retrieval (2020/03/10)
+    - [x] Set calendar permissions according to permissions read (2020/03/11)
+- [x] Verification - Run acceptance tests and verify passes (2020/03/11)
 - [ ] Delivery - Pull Request
 
 ### Review Notes
 
-
+* (2020/03/08) Austin and Charmaine successfully recreated issue using Google CalDav servers
+* (2020/03/09) Austin and Julian analyzed code and found changes only had to be made in file "calendar/providers/caldav/calDavCalendar.js", specifically in the calDavCalendar prototype. 
+* (2020/03/11) Austin and Charmaine found during implementation that setting the property mReadOnly for the calendar doesn't seem to have an effect. As well oddly there appears to be inconsistency in the readOnly property of the calDavCalendar. The functions within the calDavCalendar appear to use a property named "mReadOnly" but its observer tries to modify a property named "readOnly", with the front end also appearing to read a property called "readOnly", this is somewhat confusing. 
 
 ### Tests Designed
 
+These are manual tests
 
+#### Pull editable calendar
+
+1. Set up calendar on CalDav server and give user edit permissions
+2. Open Thunderbird Calendar and add previously created calendar using CalDav
+3. Open newly created calendar
+4. Check to see if the local calendar is editable
+
+#### Pull read-only calendar
+
+1. Set up calendar on CalDav server and give user read permissions only
+2. Open Thunderbird Calendar and add previously created calendar using CalDav
+3. Open newly created calendar
+4. Check to see if the local calendar is not editable, it should have a lock symbol or similar to indicate this
 
 ### Other Developer Commentary
 
+(Austin) Regarding automated testing I am not sure how automated tests would be written. What CalDav server would be used? How can we ensure its integrity? I know I definitely wouldn't be using my personal Google account's calendars (what I used to replicate the issue) but I don't know what other CalDav server I would use. 
 
+(Austin) Asked Prantar about testing and was told mock objects could work but would be overkill and manual testing was okay.
 
 ## Attendee List Focus Mismatch
 Description: [See Above](#attendee-list-focus-mismatch)

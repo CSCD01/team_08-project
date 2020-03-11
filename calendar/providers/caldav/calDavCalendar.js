@@ -1775,6 +1775,7 @@ calDavCalendar.prototype = {
       "<D:resourcetype/>" +
       "<D:owner/>" +
       "<D:current-user-principal/>" +
+      "<D:current-user-privilege-set/>" +
       "<D:supported-report-set/>" +
       "<C:supported-calendar-component-set/>" +
       "<CS:getctag/>" +
@@ -2020,6 +2021,17 @@ calDavCalendar.prototype = {
         }
         self.setCalHomeSet(true);
         self.checkServerCaps(aChangeLogListener);
+
+        // Check and set read/write permissions
+        let writePermission = caldavXPath(
+          multistatus,
+          "/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write"
+        );
+        if (writePermission) {
+          self.readOnly = false;
+        } else {
+          self.readOnly = true;
+        }
         return;
       }
 
