@@ -1775,6 +1775,7 @@ calDavCalendar.prototype = {
       "<D:resourcetype/>" +
       "<D:owner/>" +
       "<D:current-user-principal/>" +
+      "<D:current-user-privilege-set/>" +
       "<D:supported-report-set/>" +
       "<C:supported-calendar-component-set/>" +
       "<CS:getctag/>" +
