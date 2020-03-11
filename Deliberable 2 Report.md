@@ -87,6 +87,7 @@ Work Estimates:
 
 * (2020/03/08) Austin and Charmaine successfully recreated issue using Google CalDav servers
 * (2020/03/09) Austin and Julian analyzed code and found changes only had to be made in file "calendar/providers/caldav/calDavCalendar.js", specifically in the calDavCalendar prototype. 
+* (2020/03/11) Austin and Charmaine found during implementation that setting the property mReadOnly for the calendar doesn't seem to have an effect. As well oddly there appears to be inconsistency in the readOnly property of the calDavCalendar. The functions within the calDavCalendar appear to use a property named "mReadOnly" but its observer tries to modify a property named "readOnly", with the front end also appearing to read a property called "readOnly", this is somewhat confusing. 
 
 ### Tests Designed
 
