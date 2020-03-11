@@ -470,12 +470,13 @@
           break;
         } else if (inputField.value == "") {
           continue;
+        } else if (!inputField.attendee) {
+          continue;
         }
 
         // The inputfield already has a reference to the attendee
         // object, we just need to fill in the name.
         let attendee = inputField.attendee.clone();
-
         // attendee.role = this.getRoleElement(i).getAttribute("role");
         attendee.participationStatus = this.getStatusElement(i).getAttribute("status");
         // Organizers do not have a CUTYPE
