@@ -196,6 +196,8 @@ Bug Confirmed as such fix and acceptance test writing beginning
 This bug mainly occurs because the way attendees are added to a event in a local calendar is different from the way they are added to one with an organizer (for example, if the calendar has an attached email/user). In the latter case, the first line is the organizer, followed by lines where attendees can be added and changed. In the former, the first line is empty (due to there not being an organizer) and so is not cleared after an input, but rather duplicated.
 To fix this, the main changes were to check if an organizer exists for the created event, and if not, then allow the first line to be cleared automatically on entering a new attendee. This mainly relies upon the fact that a local calendar event won’t have an organizer, so if this design will change, this code will have to change as well. 
 In addition, there were a few found instances where the code could lead to additional bugs, such as not checking if a certain object exists, if clearing an attendee in this local calendar event (with the delete or backspace keys) the line would not be deleted so additional checks to account for this have also been created.
+
 Modified source files:
+
 -/base/content/dialogs/calendar-event-dialog-attendees.js
 -/base/content/dialogs/calendar-event-dialog-attendees-custom-elements.js
