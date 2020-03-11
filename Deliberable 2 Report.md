@@ -102,23 +102,24 @@ Work Estimates:
 * Delivery: < 1 hours
 
 ### Checklist
-- [ ] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - ___)
-- [ ] Acceptance Tests - Write tests for future verification stage
-- [ ] Implementation - Writing and functional test of code
-- [ ] TBD
-- [ ] Verification - Run acceptance tests and verify passes
-- [ ] Delivery - Pull Request
+- [x] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - 2020/03/08)
+- [x] Acceptance Tests - Write tests for future verification stage (2020/03/08 - 2020/03/08)
+- [x] Implementation - Writing and functional test of code (2020/03/08 - 2020/03/11)
+- [x] Verification - Run acceptance tests and verify passes (2020/03/11 - 2020/03/11)
+- [ ] Delivery - Pull Request (2020/03/11 - 2020/03/11)
 
 ### Review Notes
-
+1. Bug occured not just on Oracle Convergence as the bug poster stated and happened on Google calendar as well 
 
 
 ### Tests Designed
-
-
+1. Create a Caldav calendar from google docs
+2. Add the Caldav calendar to Thunderbird calendar
+3. Should have Read-Only box checked when double clicking the imported calendar. 
+4. Confirm we cannot create events. 
 
 ### Other Developer Commentary
-
+This bug is one that occurs because the developers did not write code that would check the permissions of the imported calendar. Because of this issue, the default view was write but on the source code, it was read-only. Since the Read-only box wasn't checked, the user who imported the calendar is able to try and create events to the calendar, it just will not add to the calendar as intended. 
 
 
 ## Attendee List Focus Mismatch
