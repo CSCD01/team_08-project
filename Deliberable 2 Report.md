@@ -77,10 +77,10 @@ Work Estimates:
 
 - [x] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - 2020/03/08)
 - [x] Acceptance Tests - Write tests for future verification stage (2020/03/08 - 2020/03/09)
-- [ ] Implementation - Writing and functional test of code (2020/03/09 - ___)
+- [x] Implementation - Writing and functional test of code (2020/03/09 - 2020/03/11)
     - [x] Pull data regarding user permissions from CalDav server during calendar retrieval (2020/03/10)
     - [x] Set calendar permissions according to permissions read (2020/03/11)
-- [ ] Verification - Run acceptance tests and verify passes
+- [x] Verification - Run acceptance tests and verify passes (2020/03/11)
 - [ ] Delivery - Pull Request
 
 ### Review Notes
