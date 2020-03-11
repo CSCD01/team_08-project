@@ -79,7 +79,7 @@ Work Estimates:
 - [x] Acceptance Tests - Write tests for future verification stage (2020/03/08 - 2020/03/09)
 - [ ] Implementation - Writing and functional test of code (2020/03/09 - ___)
     - [x] Pull data regarding user permissions from CalDav server during calendar retrieval (2020/03/10)
-    - [ ] Set calendar permissions according to permissions read
+    - [x] Set calendar permissions according to permissions read (2020/03/11)
 - [ ] Verification - Run acceptance tests and verify passes
 - [ ] Delivery - Pull Request
 

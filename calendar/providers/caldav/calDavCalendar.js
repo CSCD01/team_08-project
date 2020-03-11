@@ -2021,6 +2021,17 @@ calDavCalendar.prototype = {
         }
         self.setCalHomeSet(true);
         self.checkServerCaps(aChangeLogListener);
+
+        // Check and set read/write permissions
+        let writePermission = caldavXPath(
+          multistatus,
+          "/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write"
+        );
+        if (writePermission) {
+          self.readOnly = false;
+        } else {
+          self.readOnly = true;
+        }
         return;
       }
 
