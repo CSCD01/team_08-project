@@ -78,7 +78,7 @@ Work Estimates:
 - [x] Review/Design - Analyze code and bug, update implementation section with further plans (2020/03/07 - 2020/03/08)
 - [x] Acceptance Tests - Write tests for future verification stage (2020/03/08 - 2020/03/09)
 - [ ] Implementation - Writing and functional test of code (2020/03/09 - ___)
-    - [x] Pull data regarding user permissions from CalDav server during calendar creation (2020/03/10)
+    - [x] Pull data regarding user permissions from CalDav server during calendar retrieval (2020/03/10)
     - [ ] Set calendar permissions according to permissions read
 - [ ] Verification - Run acceptance tests and verify passes
 - [ ] Delivery - Pull Request
@@ -109,6 +109,8 @@ These are manual tests
 ### Other Developer Commentary
 
 (Austin) Regarding automated testing I am not sure how automated tests would be written. What CalDav server would be used? How can we ensure its integrity? I know I definitely wouldn't be using my personal Google account's calendars (what I used to replicate the issue) but I don't know what other CalDav server I would use. 
+
+(Austin) Asked Prantar about testing and was told mock objects could work but would be overkill and manual testing was okay.
 
 ## Attendee List Focus Mismatch
 
