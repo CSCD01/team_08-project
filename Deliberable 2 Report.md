@@ -200,4 +200,5 @@ In addition, there were a few found instances where the code could lead to addit
 Modified source files:
 
 -/base/content/dialogs/calendar-event-dialog-attendees.js
+
 -/base/content/dialogs/calendar-event-dialog-attendees-custom-elements.js
