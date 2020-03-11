@@ -42,7 +42,7 @@
      * @returns {Number}         New zoom factor
      */
     set zoomFactor(val) {
-      this.mZoomFactor = val;
+      this.mZoomFactor = val; 
 
       let template = this.getElementsByTagName("calendar-event-freebusy-day")[0];
       let parent = template.parentNode;
@@ -299,12 +299,11 @@
                 // left or the row was already empty before hitting the key, we remove the
                 //  entire row to assure the attendee is deleted
                 this.deleteHit(event.originalTarget);
-
                 // if the last row was removed, we append an empty one which has the focus
                 // to enable adding a new attendee directly with freebusy information cleared
                 let targetRowId =
-                  event.key == "Backspace" && curRowId > 2 ? curRowId - 1 : curRowId;
-                if (this.mMaxAttendees == 1) {
+                  (event.key == "Backspace") && curRowId > 2 ? curRowId - 1 : curRowId;
+                if (this.mMaxAttendees == 1 && this.organizer) {
                   this.appendNewRow(true);
                 } else {
                   this.setFocus(targetRowId);
@@ -706,6 +705,12 @@
         let newAttendee = this.createAttendee();
         let nextDummy = this.getNextDummyRow();
         newNode = listitem1.cloneNode(true);
+
+        //If created in a non-email related calendar, clear input value after cloning
+        if (!this.organizer) {
+          let element = this.getInputElement(1);
+          element.value = "";
+        }
 
         if (insertAfter) {
           this.insertBefore(newNode, insertAfter.nextElementSibling);
@@ -1213,7 +1218,6 @@
 
         return aMsgIAddressObject.toString();
       };
-
       let arrowLength = 1;
       if (element.value.includes(",") || element.value.match(/^[^"].*[<>@,].*[^"] <.+@.+>$/)) {
         let strippedAddresses = element.value.replace(/.* >> /, "");
@@ -1225,14 +1229,13 @@
         let insertAfterItem = this.getListItem(this.getRowByInputElement(element));
         for (let key in addresses) {
           if (key > 0) {
-            insertAfterItem = this.appendNewRow(false, insertAfterItem);
+            insertAfterItem = this.appendNewRow(true, insertAfterItem);
             let textinput = this.getInputFromListitem(insertAfterItem);
             textinput.value = parseHeaderValue(addresses[key]);
           }
         }
         arrowLength = addresses.length;
       }
-
       if (!noAdvance) {
         this.arrowHit(element, arrowLength);
       }
@@ -1254,6 +1257,7 @@
           if (input.hasAttribute("disabled")) {
             return;
           }
+
           this.setFocus(row);
         }
         let event = document.createEvent("Events");
@@ -1273,7 +1277,6 @@
       if (this.mMaxAttendees <= 1) {
         return;
       }
-
       let row = this.getRowByInputElement(element);
       this.deleteRow(row);
       if (row > 0) {
