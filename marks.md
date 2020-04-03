@@ -53,3 +53,61 @@
 **Comments**: Not enough detailed diagrams to answer meaningful questions for architecture. Processes seem its not clear to everyone  
 
 -----------------
+
+### Deliverable 2
+
+| Criteria | Grade |
+| :------- | :-----: |
+| Bugs Intro (10) |  |  
+| Choice of bugs (5) |  |  
+| Correctness (25) |  |  
+| Documentation (10) |  |
+| Test Suite (10) |  | 
+| Software Process (25) |  |
+| Presentation (15) |  |
+
+**Total (100)**:   
+**Comments**:    
+
+### Interview 2
+
+| Question | Grade |
+| :------- | :-----: |
+| Summary (1) | 1 |  
+| Demo 1 (2) | 2 |  
+| Explain 1 (1) | 1 |  
+| Test (2) | 0 |  
+| Demo 2 (2) | 2 |  
+| Software Process (2) | 2 | 
+| Bonus (1) | 1 |
+
+**Total (10)**: 9   
+**Comments**: Couldn't talk about testing in depth  
+
+-----------------
+
+### Deliverable 3
+
+| Criteria | Grade |
+| :------- | :-----: |
+| Issue Description (10) |  |  
+| Implementation Plans (10) |  |  
+| Test (5) |  |  
+| Architecture (10) |  |
+| Presentation (10) |  |  
+
+**Total (45)**:   
+**Comments**:   
+
+### Interview 3
+
+| Question | Grade |
+| :------- | :-----: |
+| First Feature (2) | 0 |  
+| Second Feature (2) | 2 |  
+| Explain Reasoning (1) | 1 |  
+| Testing (2) | 0 |  
+| Architecture (3) | 3 |  
+
+**Total (10)**: 6   
+**Comments**: Volunteer was unsure about first feature and testing strategy  
