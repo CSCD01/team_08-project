@@ -11,6 +11,9 @@
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { AppConstants } = ChromeUtils.import("resource://gre/modules/AppConstants.jsm");
+var { calendarDeactivator } = ChromeUtils.import(
+  "resource:///modules/calendar/calCalendarDeactivator.jsm"
+);
 
 /* exported commonInitCalendar, commonFinishCalendar */
 
@@ -38,6 +41,9 @@ async function commonInitCalendar() {
 
   // Set up calendar menu items in the appmenu.
   setUpCalendarAppMenuItems();
+
+  // Set up calendar deactivation for this window.
+  calendarDeactivator.registerWindow(window);
 
   // Set up item and day selection listeners
   getViewDeck().addEventListener("dayselect", observeViewDaySelect);
@@ -106,7 +112,7 @@ var calendarWindowPrefs = {
   QueryInterface: ChromeUtils.generateQI([Ci.nsIObserver]),
 
   /** Initialize the preference observers */
-  init: function() {
+  init() {
     Services.prefs.addObserver("calendar.view.useSystemColors", this);
     Services.ww.registerNotification(this);
 
@@ -115,7 +121,7 @@ var calendarWindowPrefs = {
   },
 
   /**  Cleanup the preference observers */
-  cleanup: function() {
+  cleanup() {
     Services.prefs.removeObserver("calendar.view.useSystemColors", this);
     Services.ww.unregisterNotification(this);
   },
@@ -125,7 +131,7 @@ var calendarWindowPrefs = {
    *
    * @see nsIObserver
    */
-  observe: function(aSubject, aTopic, aData) {
+  observe(aSubject, aTopic, aData) {
     if (aTopic == "nsPref:changed") {
       switch (aData) {
         case "calendar.view.useSystemColors": {
