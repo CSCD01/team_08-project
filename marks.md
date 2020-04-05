@@ -90,14 +90,27 @@
 
 | Criteria | Grade |
 | :------- | :-----: |
-| Issue Description (10) |  |  
-| Implementation Plans (10) |  |  
-| Test (5) |  |  
-| Architecture (10) |  |
-| Presentation (10) |  |  
+| Issue Description (10) | 10 |  
+| Implementation Plans (10) | 10 |  
+| Test (5) |5  |  
+| Architecture (10) | 3 |
+| Presentation (10) | 8 |  
 
-**Total (45)**:   
-**Comments**:   
+**Total (45)**: 36  
+**Comments**: Link not formatted properly in 1b of first issue. Architecture section of the deliverable was looking for some of the following criteria
+```txt
+-- architectural style; architectural pattern if applicable
+-- description of all components
+-- description of interfaces between components
+-- discussion of level of coupling between components
+-- discussion of cohesion of components
+-- how are each of the following addressed with architectural choices (if applicable)
+   -- performance
+   -- security
+   -- safety
+   -- availability
+   -- maintainability
+```
 
 ### Interview 3
 
