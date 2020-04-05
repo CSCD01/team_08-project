@@ -58,16 +58,16 @@
 
 | Criteria | Grade |
 | :------- | :-----: |
-| Bugs Intro (10) |  |  
-| Choice of bugs (5) |  |  
+| Bugs Intro (10) | 5 |  
+| Choice of bugs (5) | 5 |  
 | Correctness (25) |  |  
 | Documentation (10) |  |
 | Test Suite (10) |  | 
-| Software Process (25) |  |
-| Presentation (15) |  |
+| Software Process (25) | 0 |
+| Presentation (15) | 15 |
 
 **Total (100)**:   
-**Comments**:    
+**Comments**: Description of issues does not say where each of these bugs are in the code. Missing section on talking about software processes. Other teams that have done waterfall included their meeting dates, who attended and high level overview of the conversations that took place.   
 
 ### Interview 2
 
