@@ -82,6 +82,9 @@ pref("calendar.itip.useInvitationSubjectPrefixes", true);
 // whether separate invitation actions to more separate buttons or integrate into few buttons
 pref("calendar.itip.separateInvitationButtons", true);
 
+// Whether to show the imip bar.
+pref("calendar.itip.showImipBar", true);
+
 // whether CalDAV (experimental) scheduling is enabled or not.
 pref("calendar.caldav.sched.enabled", false);
 
@@ -136,9 +139,6 @@ pref("calendar.threading.latency ", 250);
 // Enable support for multiple realms on one server with the payoff that you
 // will get multiple password dialogs (one for each calendar)
 pref("calendar.network.multirealm", false);
-
-// Set up user agent
-#expand pref("calendar.useragent.extra", "Lightning/__THUNDERBIRD_VERSION_DISPLAY__");
 
 // Disable use of system colors in minimonth and calendar views
 pref("calendar.view.useSystemColors", false);

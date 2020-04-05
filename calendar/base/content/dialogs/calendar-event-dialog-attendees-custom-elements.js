@@ -1219,6 +1219,7 @@
 
         return aMsgIAddressObject.toString();
       };
+      
       let arrowLength = 1;
       if (element.value.includes(",") || element.value.match(/^[^"].*[<>@,].*[^"] <.+@.+>$/)) {
         let strippedAddresses = element.value.replace(/.* >> /, "");
@@ -1237,6 +1238,7 @@
         }
         arrowLength = addresses.length;
       }
+
       if (!noAdvance) {
         this.arrowHit(element, arrowLength);
       }
@@ -1258,7 +1260,6 @@
           if (input.hasAttribute("disabled")) {
             return;
           }
-
           this.setFocus(row);
         }
         let event = document.createEvent("Events");
@@ -1278,6 +1279,7 @@
       if (this.mMaxAttendees <= 1) {
         return;
       }
+
       let row = this.getRowByInputElement(element);
       this.deleteRow(row);
       if (row > 0) {

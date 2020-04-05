@@ -8,7 +8,8 @@
         <hbox id="imip-bar"
               class="lightning-notification-bar"
               collapsed="true"
-              label="&lightning.imipbar.description;">
+              label="&lightning.imipbar.description;"
+              align="center">
           <image/>
           <description class="msgNotificationBarText"
                        flex="1">
@@ -98,6 +99,14 @@
                              tooltiptext="&lightning.imipbar.btnReconfirm.tooltiptext;"
                              class="toolbarbutton-1 msgHeaderView-button imipReconfirmButton"
                              oncommand="ltnImipBar.executeAction()"
+                             hidden="true"/>
+
+              <!-- go to calendar tab -->
+              <toolbarbutton id="imipGoToCalendarButton"
+                             label="&lightning.imipbar.btnGoToCalendar.label;"
+                             tooltiptext="&lightning.imipbar.btnGoToCalendar.tooltiptext;"
+                             class="toolbarbutton-1 msgHeaderView-button imipGoToCalendarButton"
+                             oncommand="ltnImipBar.goToCalendar();"
                              hidden="true"/>
 
               <!-- accept -->
@@ -274,6 +283,9 @@
                             tooltiptext="&lightning.imipbar.btnSaveCopy.tooltiptext;"
                             label="&lightning.imipbar.btnSaveCopy.label;"
                             oncommand="ltnImipBar.executeAction('X-SAVECOPY'); event.stopPropagation();"/>
+                  <menuitem id="imipMoreButton_DoNotShowImipBar"
+                            label="&lightning.imipbar.btnDoNotShowImipBar.label;"
+                            oncommand="ltnImipBar.doNotShowImipBar();"/>
                   <!-- add here a menuitem as needed -->
                 </menupopup>
               </toolbarbutton>

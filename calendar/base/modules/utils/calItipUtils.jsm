@@ -4,6 +4,9 @@
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
+var { calendarDeactivator } = ChromeUtils.import(
+  "resource:///modules/calendar/calCalendarDeactivator.jsm"
+);
 
 ChromeUtils.defineModuleGetter(this, "cal", "resource:///modules/calendar/calUtils.jsm");
 
@@ -279,8 +282,8 @@ var calitip = {
    *
    * {
    *    label: "This is a desciptive text about the itip item",
-   *    buttons: ["imipXXXButton", ...],
-   *    hideMenuItem: ["imipXXXButton_Option", ...]
+   *    showItems: ["imipXXXButton", ...],
+   *    hideItems: ["imipXXXButton_Option", ...]
    * }
    *
    * @see processItipItem   This takes the same parameters as its optionFunc.
@@ -307,9 +310,16 @@ var calitip = {
       let disallow = foundItems[0].getProperty("X-MICROSOFT-DISALLOW-COUNTER");
       disallowedCounter = disallow && disallow == "TRUE";
     }
-    if (rc == Ci.calIErrors.CAL_IS_READONLY) {
+    if (!calendarDeactivator.isCalendarActivated) {
+      // Calendar is deactivated (no calendars are enabled).
+      data.label = cal.l10n.getLtnString("imipBarCalendarDeactivated");
+      data.showItems.push("imipGoToCalendarButton", "imipMoreButton");
+      data.hideItems.push("imipMoreButton_SaveCopy");
+    } else if (rc == Ci.calIErrors.CAL_IS_READONLY) {
       // No writable calendars, tell the user about it
       data.label = cal.l10n.getLtnString("imipBarNotWritable");
+      data.showItems.push("imipGoToCalendarButton", "imipMoreButton");
+      data.hideItems.push("imipMoreButton_SaveCopy");
     } else if (Components.isSuccessCode(rc) && !actionFunc) {
       // This case, they clicked on an old message that has already been
       // added/updated, we want to tell them that.
@@ -432,7 +442,7 @@ var calitip = {
           }
           data.showItems.push("imipMoreButton");
           // Use data.hideItems.push("idOfMenuItem") to hide specific menuitems
-          // from the dropdown menu of a button.  This might be useful to to remove
+          // from the dropdown menu of a button.  This might be useful to remove
           // a generally available option for a specific invitation, because the
           // respective feature is not available for the calendar, the invitation
           // is in or the feature is prohibited by the organizer
@@ -498,14 +508,13 @@ var calitip = {
     }
 
     let identities;
-    let actMgr = MailServices.accounts;
     if (aMsgHdr.accountKey) {
       // First, check if the message has an account key. If so, we can use the
       // account identities to find the correct recipient
-      identities = actMgr.getAccount(aMsgHdr.accountKey).identities;
+      identities = MailServices.accounts.getAccount(aMsgHdr.accountKey).identities;
     } else if (aMsgHdr.folder) {
       // Without an account key, we have to revert back to using the server
-      identities = actMgr.getIdentitiesForServer(aMsgHdr.folder.server);
+      identities = MailServices.accounts.getIdentitiesForServer(aMsgHdr.folder.server);
     }
 
     let emailMap = {};
@@ -513,7 +522,7 @@ var calitip = {
       let identity;
       // If we were not able to retrieve identities above, then we have no
       // choice but to revert to the default identity.
-      let defaultAccount = actMgr.defaultAccount;
+      let defaultAccount = MailServices.accounts.defaultAccount;
       if (defaultAccount) {
         identity = defaultAccount.defaultIdentity;
       }
@@ -521,9 +530,9 @@ var calitip = {
         // If there isn't a default identity (i.e Local Folders is your
         // default identity), then go ahead and use the first available
         // identity.
-        let allIdentities = actMgr.allIdentities;
+        let allIdentities = MailServices.accounts.allIdentities;
         if (allIdentities.length > 0) {
-          identity = allIdentities.queryElementAt(0, Ci.nsIMsgIdentity);
+          identity = allIdentities[0];
         } else {
           // If there are no identities at all, we cannot get a recipient.
           return null;
@@ -532,8 +541,7 @@ var calitip = {
       emailMap[identity.email.toLowerCase()] = true;
     } else {
       // Build a map of usable email addresses
-      for (let i = 0; i < identities.length; i++) {
-        let identity = identities.queryElementAt(i, Ci.nsIMsgIdentity);
+      for (let identity of identities) {
         emailMap[identity.email.toLowerCase()] = true;
       }
     }
