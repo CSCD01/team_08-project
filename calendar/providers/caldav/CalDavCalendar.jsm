@@ -2028,7 +2028,6 @@ CalDavCalendar.prototype = {
         } else {
           self.readOnly = true;
         }
-
         return;
       }
 

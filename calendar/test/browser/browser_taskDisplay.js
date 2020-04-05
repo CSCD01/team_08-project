@@ -2,7 +2,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/. */
 
-let calendar = cal.async.promisifyCalendar(cal.getCalendarManager().getCalendars()[0]);
+var { CALENDARNAME, createCalendar, deleteCalendars } = ChromeUtils.import(
+  "resource://testing-common/mozmill/CalendarUtils.jsm"
+);
+
+var mozmill = ChromeUtils.import("resource://testing-common/mozmill/mozmill.jsm");
+var controller = mozmill.getMail3PaneController();
+
+var calendarId = createCalendar(controller, CALENDARNAME);
+var calendar = cal.async.promisifyCalendar(cal.getCalendarManager().getCalendarById(calendarId));
+
 let tree = document.getElementById("calendar-task-tree");
 
 add_task(async () => {
@@ -51,7 +60,10 @@ add_task(async () => {
     // Although the order of expectedTasks matches the observed behaviour when
     // this test was written, order is NOT checked here. The order of the list
     // is not well defined (particularly when changing the filter text).
-    ok(expectedTasks.every(task => actualTasks.includes(task)), "All expected tasks found");
+    ok(
+      expectedTasks.every(task => actualTasks.includes(task)),
+      "All expected tasks found"
+    );
   }
 
   let today = cal.dtz.now();
@@ -197,4 +209,8 @@ add_task(async () => {
   for (let task of Object.values(tasks)) {
     await calendar.deleteItem(task);
   }
+});
+
+registerCleanupFunction(() => {
+  deleteCalendars(controller, CALENDARNAME);
 });

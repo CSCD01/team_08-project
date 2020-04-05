@@ -2,15 +2,26 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/* import-globals-from ../../lightning/content/messenger-overlay-sidebar.js */
+/* exported calendarOnToolbarsPopupShowing, customizeMailToolbarForTabType,
+ *          initViewCalendarPaneMenu, loadCalendarComponent,
+ */
+
+/* import-globals-from ../../lightning/content/lightning-item-panel.js */
 /* import-globals-from calendar-command-controller.js */
+/* import-globals-from calendar-invitations-manager.js */
+/* import-globals-from today-pane.js */
 /* import-globals-from calendar-management.js */
 /* import-globals-from calendar-ui-utils.js */
 /* import-globals-from calendar-views-utils.js */
-/* globals PanelUI */
+
+/* globals calSwitchToMode, changeMode, PanelUI, setUpInvitationsManager,
+ *         tearDownInvitationsManager,
+ */
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+var { AddonManager } = ChromeUtils.import("resource://gre/modules/AddonManager.jsm");
 var { AppConstants } = ChromeUtils.import("resource://gre/modules/AppConstants.jsm");
+var { cal } = ChromeUtils.import("resource:///modules/calendar/calUtils.jsm");
 var { calendarDeactivator } = ChromeUtils.import(
   "resource:///modules/calendar/calCalendarDeactivator.jsm"
 );
@@ -18,9 +29,19 @@ var { calendarDeactivator } = ChromeUtils.import(
 /* exported commonInitCalendar, commonFinishCalendar */
 
 /**
- * Common initialization steps for calendar chrome windows.
+ * Does calendar initialization steps for a given chrome window. Called at
+ * startup as the application window is loaded, before tabs are restored.
  */
-async function commonInitCalendar() {
+async function loadCalendarComponent() {
+  await uninstallLightningAddon();
+
+  // Check if the binary component was loaded.
+  checkCalendarBinaryComponent();
+
+  document
+    .getElementById("calendarDisplayDeck")
+    .addEventListener("select", calObserveDisplayDeckChange, true);
+
   // load locale specific default values for preferences
   setLocaleDefaultPreferences();
 
@@ -31,7 +52,7 @@ async function commonInitCalendar() {
   await loadCalendarManager();
 
   // Make sure we update ourselves if the program stays open over midnight
-  scheduleMidnightUpdate(refreshUIBits);
+  scheduleMidnightUpdate(doMidnightUpdate);
 
   // Set up the command controller from calendar-command-controller.js
   injectCalendarCommandController();
@@ -77,20 +98,56 @@ async function commonInitCalendar() {
    * calendar support refreshes (i.e. the "onLoad" notification) or when none
    * are active. In specific cases such as for file-based ICS calendars can
    * happen, the initial "onLoad" will already have been triggered at this
-   * point (see bug 714431 comment 29). We thus inconditionnally invoke
+   * point (see bug 714431 comment 29). We thus unconditionally invoke
    * calendarUpdateNewItemsCommand until somebody writes code that enables the
    * checking of the calendar readiness (getProperty("ready") ?).
    */
   calendarUpdateNewItemsCommand();
 
   // Prepare the Today Pane, and if it is ready, display it.
-  TodayPane.onLoad();
+  await TodayPane.onLoad();
+
+  // Add an unload function to the window so we don't leak any listeners.
+  window.addEventListener("unload", unloadCalendarComponent);
+
+  setUpInvitationsManager();
+
+  let filter = document.getElementById("task-tree-filtergroup");
+  filter.value = filter.value || "all";
+  changeMode();
+
+  let mailContextPopup = document.getElementById("mailContext");
+  if (mailContextPopup) {
+    mailContextPopup.addEventListener("popupshowing", gCalSetupMailContext.popup);
+  }
+
+  // Set up customizeDone handlers for our toolbars.
+  let toolbox = document.getElementById("calendar-toolbox");
+  toolbox.customizeDone = function(aEvent) {
+    MailToolboxCustomizeDone(aEvent, "CustomizeCalendarToolbar");
+  };
+  toolbox = document.getElementById("task-toolbox");
+  toolbox.customizeDone = function(aEvent) {
+    MailToolboxCustomizeDone(aEvent, "CustomizeTaskToolbar");
+  };
+
+  updateTodayPaneButton();
+
+  Services.obs.notifyObservers(window, "lightning-startup-done");
 }
 
 /**
- * Common unload steps for calendar chrome windows.
+ * Does unload steps for a given calendar chrome window.
  */
-function commonFinishCalendar() {
+function unloadCalendarComponent() {
+  tearDownInvitationsManager();
+
+  // Remove listener for mailContext.
+  let mailContextPopup = document.getElementById("mailContext");
+  if (mailContextPopup) {
+    mailContextPopup.removeEventListener("popupshowing", gCalSetupMailContext.popup);
+  }
+
   // Unload the calendar manager
   unloadCalendarManager();
 
@@ -99,6 +156,109 @@ function commonFinishCalendar() {
 
   // Clean up window pref observers
   calendarWindowPrefs.cleanup();
+}
+
+/**
+ * Uninstall the Lightning calendar addon, now that calendar is in Thunderbird.
+ */
+async function uninstallLightningAddon() {
+  try {
+    let addon = await AddonManager.getAddonByID("{e2fda1a4-762b-4020-b5ad-a41df1933103}");
+    if (addon) {
+      await addon.uninstall();
+    }
+  } catch (err) {
+    console.error("Error while attempting to uninstall Lightning addon:", err);
+  }
+}
+
+/**
+ * Checks if the calendar binary component was successfully loaded.
+ */
+function checkCalendarBinaryComponent() {
+  // Don't even get started if we are running ical.js or the binary component
+  // was successfully loaded.
+  if (
+    "@mozilla.org/calendar/datetime;1" in Cc ||
+    Services.prefs.getBoolPref("calendar.icaljs", false)
+  ) {
+    return;
+  }
+
+  const THUNDERBIRD_GUID = "{3550f703-e582-4d05-9a08-453d09bdfdc6}";
+  const SEAMONKEY_GUID = "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
+  const LIGHTNING_GUID = "{e2fda1a4-762b-4020-b5ad-a41df1933103}";
+
+  AddonManager.getAddonByID(LIGHTNING_GUID, ext => {
+    if (!ext) {
+      return;
+    }
+
+    let version;
+    let appversion = Services.appinfo.version;
+    let versionparts = appversion.split(".");
+    let extbrand = cal.l10n.getLtnString("brandShortName");
+
+    switch (Services.appinfo.ID) {
+      case THUNDERBIRD_GUID: // e.g. 31.4.0 -> 3.3
+        version = ((parseInt(versionparts[0], 10) + 2) / 10).toFixed(1);
+        break;
+      case SEAMONKEY_GUID: // e.g. 2.28.4 -> 3.3
+        version = ((parseInt(versionparts[1], 10) + 5) / 10).toFixed(1);
+        break;
+    }
+
+    let text;
+    if (version && version != ext.version) {
+      let args = [extbrand, ext.version, version];
+      text = cal.l10n.getLtnString("binaryComponentKnown", args);
+    } else {
+      let brand = cal.l10n.getAnyString("branding", "brand", "brandShortName");
+      let args = [extbrand, brand, appversion, ext.version];
+      text = cal.l10n.getLtnString("binaryComponentUnknown", args);
+    }
+
+    let title = cal.l10n.getLtnString("binaryComponentTitle", [extbrand]);
+    openAddonsMgr("addons://detail/" + encodeURIComponent(LIGHTNING_GUID));
+    Services.prompt.alert(window, title, text);
+  });
+}
+
+/**
+ * This function has the sole responsibility to switch back to
+ * mail mode (by calling calSwitchToMode("mail")) if we are getting
+ * notifications from other panels (besides the calendar views)
+ * but find out that we're not in mail mode. This situation can
+ * for example happen if we're in calendar mode but the 'new mail'
+ * slider gets clicked and wants to display the appropriate mail.
+ * All necessary logic for switching between the different modes
+ * should live inside of the corresponding functions like:
+ * - calSwitchToCalendarMode()
+ * - calSwitchToTaskMode()
+ * - calSwitchToMode()
+ */
+function calObserveDisplayDeckChange(event) {
+  let deck = event.target;
+
+  // Bug 309505: The 'select' event also fires when we change the selected
+  // panel of calendar-view-box.  Workaround with this check.
+  if (deck.id != "calendarDisplayDeck") {
+    return;
+  }
+
+  let id = deck.selectedPanel && deck.selectedPanel.id;
+
+  // Switch back to mail mode in case we find that this
+  // notification has been fired but we're still in calendar or task mode.
+  // Specifically, switch back if we're *not* in mail mode but the notification
+  // did *not* come from either the "calendar-view-box" or the "calendar-task-box".
+  if (
+    (gCurrentMode == "calendar" || gCurrentMode == "task") &&
+    id != "calendar-view-box" &&
+    id != "calendar-task-box"
+  ) {
+    calSwitchToMode("mail");
+  }
 }
 
 /**
@@ -158,24 +318,9 @@ var calendarWindowPrefs = {
  * Set up calendar appmenu buttons by adding event listeners to the buttons.
  */
 function setUpCalendarAppMenuButtons() {
-  function setUpButton(id, toolboxId) {
-    let button = document.getElementById(id);
-    if (!button) {
-      // If not in the document, the button should be in the toolbox palette,
-      // which isn't part of the document.
-      let toolbox = document.getElementById(toolboxId);
-      button = toolbox.palette.querySelector(`#${id}`);
-    }
-
-    if (button) {
-      button.addEventListener("mousedown", PanelUI);
-      button.addEventListener("keypress", PanelUI);
-    }
-  }
-
-  setUpButton("calendar-appmenu-button", "calendar-toolbox");
-  setUpButton("task-appmenu-button", "task-toolbox");
-  setUpButton("calendar-item-appmenu-button", "event-toolbox");
+  PanelUI.initAppMenuButton("calendar-appmenu-button", "calendar-toolbox");
+  PanelUI.initAppMenuButton("task-appmenu-button", "task-toolbox");
+  PanelUI.initAppMenuButton("calendar-item-appmenu-button", "event-toolbox");
 }
 
 /**
@@ -215,7 +360,7 @@ function setUpCalendarAppMenuItems() {
   // Refresh the "View" / "Calendar" / "Calendar Pane" menu when it is shown.
   document
     .getElementById("appmenu_ltnCalendarPaneView")
-    .addEventListener("ViewShowing", InitViewCalendarPaneMenu);
+    .addEventListener("ViewShowing", initViewCalendarPaneMenu);
 }
 
 /**
@@ -333,4 +478,178 @@ function setLocaleDefaultPreferences() {
   }
 
   cal.LOG("Loading of locale sensitive preference default values completed.");
+}
+
+/**
+ * Called at midnight to tell us to redraw date-specific widgets.  Do NOT call
+ * this for normal refresh, since it also calls scheduleMidnightUpdate.
+ */
+function doMidnightUpdate() {
+  try {
+    getMinimonth().refreshDisplay();
+
+    // Refresh the current view and just allow the refresh for the others
+    // views when will be displayed.
+    let currView = currentView();
+    currView.goToDay();
+    let views = ["day-view", "week-view", "multiweek-view", "month-view"];
+    for (let view of views) {
+      if (view != currView.id) {
+        document.getElementById(view).mToggleStatus = -1;
+      }
+    }
+
+    if (!TodayPane.showsToday()) {
+      TodayPane.setDay(cal.dtz.now());
+    }
+
+    // Update the unifinder.
+    refreshEventTree();
+
+    // Update today's date on todaypane button.
+    updateTodayPaneButtonDate();
+  } catch (exc) {
+    cal.ASSERT(false, exc);
+  }
+
+  // Schedule the next update.
+  scheduleMidnightUpdate(doMidnightUpdate);
+}
+
+/**
+ * Updates button structure to enable images on both sides of the label.
+ */
+function updateTodayPaneButton() {
+  let todaypane = document.getElementById("calendar-status-todaypane-button");
+
+  let iconStack = document.createXULElement("stack");
+  iconStack.setAttribute("pack", "center");
+  iconStack.setAttribute("align", "end");
+
+  let iconBegin = document.createXULElement("image");
+  iconBegin.classList.add("toolbarbutton-icon-begin");
+
+  let iconLabel = document.createXULElement("label");
+  iconLabel.classList.add("toolbarbutton-day-text");
+
+  let dayNumber = cal.l10n.getDateFmtString(`day.${cal.dtz.now().day}.number`);
+  iconLabel.textContent = dayNumber;
+
+  iconStack.appendChild(iconBegin);
+  iconStack.appendChild(iconLabel);
+
+  let iconEnd = document.createXULElement("image");
+  iconEnd.classList.add("toolbarbutton-icon-end");
+
+  let oldImage = todaypane.querySelector(".toolbarbutton-icon");
+  todaypane.replaceChild(iconStack, oldImage);
+  todaypane.appendChild(iconEnd);
+
+  let calSidebar = document.getElementById("ltnSidebar");
+  todaypane.setAttribute("checked", !calSidebar.getAttribute("collapsed"));
+}
+
+/**
+ * Updates the date number in the calendar icon of the todaypane button.
+ */
+function updateTodayPaneButtonDate() {
+  let todaypane = document.getElementById("calendar-status-todaypane-button");
+
+  let dayNumber = cal.l10n.getDateFmtString(`day.${cal.dtz.now().day}.number`);
+  todaypane.querySelector(".toolbarbutton-day-text").textContent = dayNumber;
+}
+
+var gCalSetupMailContext = {
+  popup() {
+    let hasSelection = gFolderDisplay.selectedMessage != null;
+    // Disable the convert menu altogether.
+    setElementValue("mailContext-calendar-convert-menu", !hasSelection && "true", "hidden");
+  },
+};
+
+// Overwrite the InitMessageMenu function, since we never know in which order
+// the popupshowing event will be processed. This function takes care of
+// disabling the message menu when in calendar or task mode.
+function calInitMessageMenu() {
+  calInitMessageMenu.origFunc();
+
+  document.getElementById("markMenu").disabled = gCurrentMode != "mail";
+}
+calInitMessageMenu.origFunc = InitMessageMenu;
+InitMessageMenu = calInitMessageMenu;
+
+/**
+ * Get the toolbox id for the current tab type.
+ *
+ * @return {string}  A toolbox id or null
+ */
+function getToolboxIdForCurrentTabType() {
+  // A mapping from calendar tab types to toolbox ids.
+  const calendarToolboxIds = {
+    calendar: "calendar-toolbox",
+    tasks: "task-toolbox",
+    calendarEvent: "event-toolbox",
+    calendarTask: "event-toolbox",
+  };
+  let tabmail = document.getElementById("tabmail");
+  let tabType = tabmail.currentTabInfo.mode.type;
+
+  return calendarToolboxIds[tabType] || "mail-toolbox";
+}
+
+/**
+ * Modify the contents of the "Toolbars" context menu for the current
+ * tab type.  Menu items are inserted before (appear above) aInsertPoint.
+ *
+ * @param {MouseEvent} aEvent              The popupshowing event
+ * @param {nsIDOMXULElement} aInsertPoint  (optional) menuitem node
+ */
+function calendarOnToolbarsPopupShowing(aEvent, aInsertPoint) {
+  if (onViewToolbarsPopupShowing.length < 3) {
+    // SeaMonkey
+    onViewToolbarsPopupShowing(aEvent);
+    return;
+  }
+
+  let toolboxes = [];
+  let toolboxId = getToolboxIdForCurrentTabType();
+
+  // We add navigation-toolbox ("Menu Bar") for all tab types except
+  // mail tabs because mail-toolbox already includes navigation-toolbox,
+  // so we do not need to add it separately in that case.
+  if (toolboxId != "mail-toolbox") {
+    toolboxes.push("navigation-toolbox");
+  }
+  toolboxes.push(toolboxId);
+
+  onViewToolbarsPopupShowing(aEvent, toolboxes, aInsertPoint);
+}
+
+/**
+ * Open the customize dialog for the toolbar for the current tab type.
+ */
+function customizeMailToolbarForTabType() {
+  let toolboxId = getToolboxIdForCurrentTabType();
+  if (toolboxId == "event-toolbox") {
+    onCommandCustomize();
+  } else {
+    CustomizeMailToolbar(toolboxId, "CustomizeMailToolbar");
+  }
+}
+
+/**
+ * Initialize the calendar sidebar menu state.
+ */
+function initViewCalendarPaneMenu() {
+  let calSidebar = document.getElementById("ltnSidebar");
+
+  setBooleanAttribute("ltnViewCalendarPane", "checked", !calSidebar.getAttribute("collapsed"));
+
+  if (document.getElementById("appmenu_ltnViewCalendarPane")) {
+    setBooleanAttribute(
+      "appmenu_ltnViewCalendarPane",
+      "checked",
+      !calSidebar.getAttribute("collapsed")
+    );
+  }
 }

@@ -410,6 +410,8 @@ function initHomeCalendar() {
   let url = Services.io.newURI("moz-storage-calendar://");
   let homeCalendar = calMgr.createCalendar("storage", url);
   homeCalendar.name = cal.l10n.getCalString("homeCalendarName");
+  homeCalendar.setProperty("disabled", true);
+
   calMgr.registerCalendar(homeCalendar);
   Services.prefs.setStringPref("calendar.list.sortOrder", homeCalendar.id);
   composite.addCalendar(homeCalendar);
@@ -614,17 +616,26 @@ var compositeObserver = {
 
   onStartBatch() {},
   onEndBatch() {},
-  onAddItem() {},
-  onModifyItem() {},
-  onDeleteItem() {},
-  onError() {},
-  onPropertyChanged() {},
-  onPropertyDeleting() {},
 
   onLoad() {
     calendarUpdateNewItemsCommand();
     document.commandDispatcher.updateCommands("calendar_commands");
   },
+
+  onAddItem() {},
+  onModifyItem() {},
+  onDeleteItem() {},
+  onError() {},
+
+  onPropertyChanged(calendar, name, value, oldValue) {
+    if (name == "disabled") {
+      // Update commands when a calendar has been enabled or disabled.
+      calendarUpdateNewItemsCommand();
+      document.commandDispatcher.updateCommands("calendar_commands");
+    }
+  },
+
+  onPropertyDeleting() {},
 
   onCalendarAdded(aCalendar) {
     // Update the calendar commands for number of remote calendars and for
