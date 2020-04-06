@@ -49,3 +49,5 @@
 
 <!ENTITY network.subscribe.single.description "Please select the calendars you would like to subscribe to.">
 <!ENTITY network.subscribe.multiple.description "Multiple calendar types are available for this location. Please select the calendar type, then mark the calendars you would like to subscribe to.">
+
+<!ENTITY calendarCreation.roomResource.email                   "Resource Email:">

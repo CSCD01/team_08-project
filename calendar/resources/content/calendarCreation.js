@@ -19,6 +19,7 @@ var errorConstants = {
   SUCCESS: 0,
   INVALID_URI: 1,
   ALREADY_EXISTS: 2,
+  INVALID_EMAIL: 3,
 };
 
 var l10nStrings = {};
@@ -30,6 +31,10 @@ l10nStrings[errorConstants.INVALID_URI] = cal.l10n.getString(
 l10nStrings[errorConstants.ALREADY_EXISTS] = cal.l10n.getString(
   "calendarCreation",
   "error.alreadyExists"
+);
+l10nStrings[errorConstants.INVALID_EMAIL] = cal.l10n.getString(
+  "calendarCreation",
+  "error.badEmail"
 );
 
 var gNotification = {};
@@ -71,6 +76,7 @@ function initLocationPage() {
  * Initialize the customize page
  */
 function initCustomizePage() {
+  onRoomResource();
   initNameFromURI();
   checkRequired();
 
@@ -145,6 +151,15 @@ function onSelectProvider(type) {
 }
 
 /**
+ * Toggles the email address requirement for room/resource calendars based on checkbox
+ */
+function onRoomResource() {
+  checkRequired();
+  const hidden = !document.getElementById("is-room-resource").checked;
+  document.getElementById("room-resource-email-row").toggleAttribute("hidden", hidden);
+}
+
+/**
  * Checks if the required information is set so that the wizard can advance. On
  * an error, notifications are shown and the wizard can not be advanced.
  */
@@ -169,6 +184,20 @@ function checkRequired() {
     } else {
       gNotification.notificationbox.removeAllNotifications();
     }
+    // checks if room resource is on and sets advanced and error messages accordingly
+    if(
+      canAdvance && 
+      curPage.pageid == "customizePage" && 
+      document.getElementById("is-room-resource").checked
+      ) {
+        let [reason] = parseEmail(document.getElementById("room-resource-email").value);
+        canAdvance = reason == errorConstants.SUCCESS;
+        setNotification(reason); 
+    } else {
+      gNotification.notificationbox.removeAllNotifications();
+    }
+
+    
     document.querySelector("wizard").canAdvance = canAdvance;
   }
 }
@@ -294,6 +323,22 @@ function parseUri(aUri) {
   }
 
   return [errorConstants.SUCCESS, uri];
+}
+
+/**
+ * Parses the given email value to check if it is valid and there is not 
+ * already a contact with that email
+ *
+ * @param {string} aEmail   The string to parse as an email.
+ * @return [error, email]   |error| is the error code from errorConstants,
+ *                          |email| the confirmed valid email.
+ */
+function parseEmail(aEmail) {
+  let ret = [];
+  if(!/.@./.test(aEmail)){
+    return [errorConstants.INVALID_EMAIL, null];
+  }
+  return [errorConstants.SUCCESS, aEmail];
 }
 
 /**

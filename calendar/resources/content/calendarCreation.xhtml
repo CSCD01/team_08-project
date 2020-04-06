@@ -143,6 +143,24 @@
             </hbox>
           </html:td>
         </html:tr>
+        <html:tr>
+          <html:th></html:th>
+          <html:td>
+            <checkbox id="is-room-resource" checked="false" onclick="onRoomResource()" label="&calendarproperties.roomResource;"/>
+          </html:td>
+        </html:tr>
+        <html:tr id="room-resource-email-row">
+          <html:th>
+            <label id="room-resource-email-label" value="&calendarCreation.roomResource.email;" control="room-resource-email"/>
+          </html:th>
+          <html:td id="room-resource-email-td">
+            <hbox flex="1" class="input-container">
+              <html:input id="room-resource-email" type="email" class="input-inline"
+                          aria-labelledby="room-resource-email-label"
+                          oninput="checkRequired();"/>
+            </hbox>
+          </html:td>
+        </html:tr>
         <html:tr id="customize-suppressAlarms-row">
           <html:th>
             <label value="&calendarproperties.firealarms.label;:" control="fire-alarms"/>
