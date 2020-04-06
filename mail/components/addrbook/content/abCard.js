@@ -16,6 +16,7 @@ var kNonVcardFields = [
   "ScreenNameContainer",
   "customFields",
   "preferDisplayName",
+  "isRoomResource"
 ];
 
 var kPhoneticFields = [
@@ -353,6 +354,9 @@ function OnLoadEditCard() {
         // And the "prefer display name" checkbox
         document.getElementById("preferDisplayName").disabled = true;
 
+        // And the "room/resource" checkbox
+        document.getElementById("isRoomResource").disabled = true;
+
         document.querySelector("dialog").buttons = "accept";
         return;
       }
@@ -623,6 +627,15 @@ function GetCardValues(cardproperty, doc) {
     );
   }
 
+  var isRoomResourceEl = document.getElementById("isRoomResource");
+  if (isRoomResourceEl) {
+    // getProperty may return a "1" or "0" string, we want a boolean
+    isRoomResourceEl.checked = !!cardproperty.getProperty(
+      "isRoomResource",
+      true
+    );
+  }
+
   // get phonetic fields if exist
   try {
     doc.getElementById("PhoneticFirstName").value = cardproperty.getProperty(
@@ -696,6 +709,11 @@ function CheckAndSetCardValues(cardproperty, doc, check) {
   var preferDisplayNameEl = document.getElementById("preferDisplayName");
   if (preferDisplayNameEl) {
     cardproperty.setProperty("PreferDisplayName", preferDisplayNameEl.checked);
+  }
+
+  var isRoomResourceEl = document.getElementById("isRoomResource");
+  if (isRoomResourceEl) {
+    cardproperty.setProperty("isRoomResource", isRoomResourceEl.checked);
   }
 
   // set phonetic fields if exist
