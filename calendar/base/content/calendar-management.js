@@ -474,6 +474,12 @@ function calendarListTooltipShowing(event) {
   } else if (item.hasAttribute("calendar-readonly")) {
     tooltipText = cal.l10n.getCalString("tooltipCalendarReadOnly", [calendarName]);
   }
+  if (item.hasAttribute("calendar-roomResource")) {
+    if(tooltipText.length > 0) {
+      tooltipText = tooltipText + ". ";
+    }
+    tooltipText = tooltipText + cal.l10n.getCalString("tooltipCalendarRoomResource", [calendarName]);
+  }
 
   setElementValue("calendar-list-tooltip", tooltipText, "label");
   return !!tooltipText;
