@@ -62,11 +62,11 @@
 | Choice of bugs (5) | 5 |  
 | Correctness (25) | 17 |  
 | Documentation (10) | 10 |
-| Test Suite (10) | 5 | 
+| Test Suite (10) | 8 | 
 | Software Process (25) | 5 |
 | Presentation (15) | 15 |
 
-**Total (100)**: 62   
+**Total (100)**: 65   
 **Comments**: Description of issues does not say where each of these bugs are in the code. Missing section on talking about software processes. Other teams that have done waterfall included their meeting dates, who attended and high level overview of the conversations that took place, marks were awarded for review notes. No pull requests submitted. Issue #1594335 in file calendar-event-dialog-attendees-custom-elements.js line 473 unnecessary else if condition. No marks deducted for this but in file calDavCalendar.js line 2030, if block could be replaced with self.readOnly = !writePermission. No unit testing done.  
 
 ### Interview 2
