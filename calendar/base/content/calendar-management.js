@@ -141,6 +141,10 @@ function loadCalendarManager() {
     if (calendar.readOnly) {
       item.setAttribute("calendar-readonly", "true");
     }
+    console.log("GOT ", calendar.name, " is a :", calendar.getProperty("roomResource"));
+    if (calendar.getProperty("roomResource")) {
+      item.setAttribute("calendar-roomResource", "true");
+    }
 
     let checkbox = document.createXULElement("checkbox");
     checkbox.classList.add("calendar-displayed");
@@ -160,6 +164,11 @@ function loadCalendarManager() {
     label.classList.add("calendar-name");
     label.value = calendar.name;
     item.appendChild(label);
+
+    image = document.createXULElement("image");
+    image.classList.add("calendar-roomResource");
+    image.setAttribute("tooltip", "calendar-list-tooltip");
+    item.appendChild(image);
 
     image = document.createXULElement("image");
     image.classList.add("calendar-readstatus");
@@ -364,6 +373,9 @@ function loadCalendarManager() {
           break;
         case "readOnly":
           setBooleanAttribute(item, "calendar-readonly", value);
+          break;
+        case "roomResource":
+          setBooleanAttribute(item, "calendar-roomResource", value);
           break;
       }
     },

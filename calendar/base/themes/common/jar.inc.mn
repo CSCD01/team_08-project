@@ -62,6 +62,7 @@
     skin/classic/calendar/shared/icons/pane.svg                                  (../common/icons/pane.svg)
     skin/classic/calendar/shared/icons/priority.svg                              (../common/icons/priority.svg)
     skin/classic/calendar/shared/icons/private.svg                               (../common/icons/private.svg)
+    skin/classic/calendar/shared/icons/room-resource.svg                         (../common/icons/room-resource.svg)
     skin/classic/calendar/shared/icons/save-close.svg                            (../common/icons/save-close.svg)
     skin/classic/calendar/shared/icons/status.svg                                (../common/icons/status.svg)
     skin/classic/calendar/shared/icons/synchronize.svg                           (../common/icons/synchronize.svg)
