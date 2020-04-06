@@ -254,6 +254,7 @@ function prepareCreateCalendar(event) {
 function doCreateCalendar() {
   let cal_name = document.getElementById("calendar-name").value;
   let cal_color = document.getElementById("calendar-color").value;
+  const cal_room_resource = document.getElementById("is-room-resource").checked;
 
   gCalendar.name = cal_name;
   gCalendar.setProperty("color", cal_color);
@@ -272,6 +273,11 @@ function doCreateCalendar() {
 
   if (!document.getElementById("fire-alarms").checked) {
     gCalendar.setProperty("suppressAlarms", true);
+  }
+
+  if(cal_room_resource) {
+    gCalendar.setProperty("roomResource", true);
+    gCalendar.readOnly = true;
   }
 
   cal.getCalendarManager().registerCalendar(gCalendar);
