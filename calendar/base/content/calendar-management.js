@@ -164,8 +164,10 @@ function loadCalendarManager() {
     label.value = calendar.name;
     item.appendChild(label);
 
+    // create room resource icon
     image = document.createXULElement("image");
     image.classList.add("calendar-roomResource");
+    image.setAttribute("calendar-roomResource", "true");
     image.setAttribute("tooltip", "calendar-list-tooltip");
     item.appendChild(image);
 
@@ -472,6 +474,12 @@ function calendarListTooltipShowing(event) {
     tooltipText = cal.l10n.getCalString("tooltipCalendarDisabled", [calendarName]);
   } else if (item.hasAttribute("calendar-readonly")) {
     tooltipText = cal.l10n.getCalString("tooltipCalendarReadOnly", [calendarName]);
+  }
+
+  // check for if room resource calendar tooltip
+  let image = realTarget.closest("image");
+  if (image && image.hasAttribute("calendar-roomResource")) {
+    tooltipText = cal.l10n.getCalString("tooltipRoomResourceCalendar", [calendarName]);
   }
 
   setElementValue("calendar-list-tooltip", tooltipText, "label");

@@ -276,6 +276,7 @@ function doCreateCalendar() {
     gCalendar.setProperty("suppressAlarms", true);
   }
 
+  // setup readonly as default for new room resource calendar
   if (cal_room_resource) {
     gCalendar.setProperty("roomResource", true);
     gCalendar.readOnly = true;
@@ -373,6 +374,9 @@ function createContactInCA() {
   }
 }
 
+/**
+ * Returns an empty contact card for the adress book
+ */
 function generateEmptyContact() {
   let card = {displayLastNameFirst: false, generateDisplayName: true};
   card = "arguments" in window &&
