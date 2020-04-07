@@ -141,7 +141,6 @@ function loadCalendarManager() {
     if (calendar.readOnly) {
       item.setAttribute("calendar-readonly", "true");
     }
-    console.log("GOT ", calendar.name, " is a :", calendar.getProperty("roomResource"));
     if (calendar.getProperty("roomResource")) {
       item.setAttribute("calendar-roomResource", "true");
     }
@@ -165,8 +164,10 @@ function loadCalendarManager() {
     label.value = calendar.name;
     item.appendChild(label);
 
+    // create room resource icon
     image = document.createXULElement("image");
     image.classList.add("calendar-roomResource");
+    image.setAttribute("calendar-roomResource", "true");
     image.setAttribute("tooltip", "calendar-list-tooltip");
     item.appendChild(image);
 
@@ -479,6 +480,12 @@ function calendarListTooltipShowing(event) {
       tooltipText = tooltipText + ". ";
     }
     tooltipText = tooltipText + cal.l10n.getCalString("tooltipCalendarRoomResource", [calendarName]);
+  }
+
+  // check for if room resource calendar tooltip
+  let image = realTarget.closest("image");
+  if (image && image.hasAttribute("calendar-roomResource")) {
+    tooltipText = cal.l10n.getCalString("tooltipRoomResourceCalendar", [calendarName]);
   }
 
   setElementValue("calendar-list-tooltip", tooltipText, "label");
