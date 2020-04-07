@@ -70,13 +70,14 @@ function onLoad() {
  */
 function initLocationPage() {
   checkRequired();
+  onRoomResource();
 }
 
 /**
  * Initialize the customize page
  */
 function initCustomizePage() {
-  onRoomResource();
+  createContactInCA();
   initNameFromURI();
   checkRequired();
 
@@ -185,19 +186,19 @@ function checkRequired() {
       gNotification.notificationbox.removeAllNotifications();
     }
     // checks if room resource is on and sets advanced and error messages accordingly
-    if(
-      canAdvance && 
-      curPage.pageid == "customizePage" && 
+    if (
+      canAdvance &&
+      curPage.pageid == "locationPage" &&
       document.getElementById("is-room-resource").checked
-      ) {
-        let [reason] = parseEmail(document.getElementById("room-resource-email").value);
-        canAdvance = reason == errorConstants.SUCCESS;
-        setNotification(reason); 
+    ) {
+      let [reason] = parseEmail(document.getElementById("room-resource-email").value);
+      canAdvance = reason == errorConstants.SUCCESS;
+      setNotification(reason);
     } else {
       gNotification.notificationbox.removeAllNotifications();
     }
 
-    
+
     document.querySelector("wizard").canAdvance = canAdvance;
   }
 }
@@ -275,7 +276,7 @@ function doCreateCalendar() {
     gCalendar.setProperty("suppressAlarms", true);
   }
 
-  if(cal_room_resource) {
+  if (cal_room_resource) {
     gCalendar.setProperty("roomResource", true);
     gCalendar.readOnly = true;
   }
@@ -341,7 +342,7 @@ function parseUri(aUri) {
  */
 function parseEmail(aEmail) {
   let ret = [];
-  if(!/.@./.test(aEmail)){
+  if (!/.@./.test(aEmail)) {
     return [errorConstants.INVALID_EMAIL, null];
   }
   return [errorConstants.SUCCESS, aEmail];
@@ -353,4 +354,33 @@ function parseEmail(aEmail) {
  */
 function setCanRewindFalse() {
   document.querySelector("wizard").canRewind = false;
+}
+
+/**
+ * Creates an entry in the CollectedAddresses Address book if a room/resource calendar exists
+ */
+function createContactInCA() {
+  if (document.getElementById("is-room-resource").checked) {
+    // get variables and set addressbook address
+    const email = document.getElementById("room-resource-email").value;
+    let abCard = generateEmptyContact();
+    abCard.primaryEmail = email;
+
+    // add to address book
+    var directory = GetDirectoryFromURI(kCollectedAddressbookURI);
+    abCard = directory.addCard(abCard);
+  }
+}
+
+function generateEmptyContact() {
+  let card = {displayLastNameFirst: false, generateDisplayName: true};
+  card = "arguments" in window &&
+  window.arguments.length > 0 &&
+  window.arguments[0] instanceof Ci.nsIAbCard
+    ? window.arguments[0]
+    : Cc["@mozilla.org/addressbook/cardproperty;1"].createInstance(
+        Ci.nsIAbCard
+      );
+
+  return card
 }
