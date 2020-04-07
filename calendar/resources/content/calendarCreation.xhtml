@@ -33,6 +33,8 @@
   <script src="chrome://lightning/content/caldav-lightning-utils.js"/>
   <script src="chrome://lightning/content/caldav-lightning-calendar-creation.js"/>
 
+  // imported adressbook scripts to be able to add user to address book
+  <script src="chrome://messenger/content/addressbook/abCommon.js"/>
   <wizard id="calendar-wizard">
     <wizardpage id="initialPage"
                 pageid="initialPage"
@@ -86,6 +88,24 @@
               <html:input id="calendar-uri" type="url" class="input-inline"
                           required="required"
                           aria-labelledby="calendar-uri-label"
+                          oninput="checkRequired();"/>
+            </hbox>
+          </html:td>
+        </html:tr>
+        <html:tr>
+          <html:th></html:th>
+          <html:td>
+            <checkbox id="is-room-resource" checked="false" onclick="onRoomResource()" label="&calendarproperties.roomResource;"/>
+          </html:td>
+        </html:tr>
+        <html:tr id="room-resource-email-row">
+          <html:th>
+            <label id="room-resource-email-label" value="&calendarCreation.roomResource.email;" control="room-resource-email"/>
+          </html:th>
+          <html:td id="room-resource-email-td">
+            <hbox flex="1" class="input-container">
+              <html:input id="room-resource-email" type="email" class="input-inline"
+                          aria-labelledby="room-resource-email-label"
                           oninput="checkRequired();"/>
             </hbox>
           </html:td>
