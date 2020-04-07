@@ -23,12 +23,14 @@ function onLoad() {
   gCalendar = window.arguments[0].calendar;
   let calColor = gCalendar.getProperty("color");
   let resourceRoom = gCalendar.getProperty("roomResource");
+  let roomResourceEmail = gCalendar.getProperty("roomResourceEmail");
 
   document.getElementById("calendar-name").value = gCalendar.name;
   document.getElementById("calendar-color").value = calColor || "#A8C2E1";
   document.getElementById("calendar-uri").value = gCalendar.uri.spec;
   document.getElementById("read-only").checked = gCalendar.readOnly;
   document.getElementById("room-resource").checked = resourceRoom;
+  document.getElementById("calendar-room-resource-email").value = roomResourceEmail;
 
   if (gCalendar.getProperty("capabilities.username.supported") === true) {
     document.getElementById("calendar-username").value = gCalendar.getProperty("username");
@@ -104,6 +106,7 @@ function onAcceptDialog() {
 
   // save room resource state
   gCalendar.setProperty("roomResource", document.getElementById("room-resource").checked);
+  gCalendar.setProperty("roomResourceEmail", document.getElementById("calendar-room-resource-email").value);
 
   // Save supressAlarms
   gCalendar.setProperty("suppressAlarms", !document.getElementById("fire-alarms").checked);
