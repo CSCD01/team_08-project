@@ -42,7 +42,7 @@
      * @returns {Number}         New zoom factor
      */
     set zoomFactor(val) {
-      this.mZoomFactor = val; 
+      this.mZoomFactor = val;
 
       let template = this.getElementsByTagName("calendar-event-freebusy-day")[0];
       let parent = template.parentNode;
@@ -759,6 +759,9 @@
           this.setFocus(newNode);
         }
       }
+
+      this.areWarnings();
+
       return newNode;
     }
 
@@ -1219,7 +1222,7 @@
 
         return aMsgIAddressObject.toString();
       };
-      
+
       let arrowLength = 1;
       if (element.value.includes(",") || element.value.match(/^[^"].*[<>@,].*[^"] <.+@.+>$/)) {
         let strippedAddresses = element.value.replace(/.* >> /, "");
@@ -1312,6 +1315,45 @@
       this.getListItem(row).remove();
       this.fitDummyRows();
       this.mMaxAttendees--;
+    }
+
+        /**
+     * Goes through warnings and returns true if a warning exists
+     * @returns {boolean}         Any warnings exist
+     */
+    areWarnings() {
+      let ret = "";
+      ret = ret + this.checkGoogleResourceEmailWarning();
+      this.setWarningText(ret);
+      return ret;
+    }
+
+    /**
+     * Updates the warning field with a new warning
+     * @param {string} text text to place in the warning text
+     */
+    setWarningText(text) {
+      const elem = document.getElementById("warning-text");
+      elem.value = text;
+    }
+
+    /**
+     * Check if google resources in attendees as they will only accept if the organizer and the calendar is attached to a google account
+     * @returns {string}         warning text to set
+     */
+    checkGoogleResourceEmailWarning() {
+      let ret = "";
+      for (let i = 1; i <= this.itemCount; i++) {
+        let inputField = this.getInputElement(i);
+        if(inputField && inputField.value && inputField.value.search("@resource.calendar.google.com") > 0) {
+          ret = cal.l10n.getString(
+            "calendar-event-dialog-attendees",
+            "event.warning.google.resource"
+          );
+        }
+      }
+
+      return ret;
     }
   }
   customElements.define("calendar-event-attendees-list", MozCalendarEventAttendeesList);
@@ -2668,7 +2710,7 @@
      * @returns {Number}        Element index
      */
     set firstVisibleRow(val) {
-        this.ensureElementIsVisible(this.getItemAtIndex(val), true);
+      this.ensureElementIsVisible(this.getItemAtIndex(val), true);
       return val;
     }
 
@@ -2785,7 +2827,7 @@
      *
      * @param {Object} calendar     The calendar to change to
      */
-    onChangeCalendar(calendar) {}
+    onChangeCalendar(calendar) { }
 
     /**
      * Appends a new empty row to the freebusy grid.
