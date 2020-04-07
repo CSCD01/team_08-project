@@ -366,6 +366,7 @@
 <!ENTITY calendarproperties.unsubscribe.label              "Unsubscribe">
 <!ENTITY calendarproperties.unsubscribe.accesskey          "U">
 <!ENTITY calendarproperties.roomResource                   "Room/Resource Calendar">
+<!ENTITY calendarproperties.roomResourceEmail              "Room/Resource Email">
 
 <!-- Calendar Publish Dialog -->
 <!ENTITY calendar.publish.dialog.title              "Publish Calendar">
