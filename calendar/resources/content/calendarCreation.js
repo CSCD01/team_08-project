@@ -365,6 +365,7 @@ function createContactInCA() {
     const email = document.getElementById("room-resource-email").value;
     let abCard = generateEmptyContact();
     abCard.primaryEmail = email;
+    abCard.setProperty("isRoomResource", true);
 
     // add to address book
     var directory = GetDirectoryFromURI(kCollectedAddressbookURI);
