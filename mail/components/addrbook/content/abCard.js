@@ -632,7 +632,7 @@ function GetCardValues(cardproperty, doc) {
     // getProperty may return a "1" or "0" string, we want a boolean
     isRoomResourceEl.checked = !!cardproperty.getProperty(
       "isRoomResource",
-      true
+      false
     );
   }
 
