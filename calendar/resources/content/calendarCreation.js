@@ -256,6 +256,7 @@ function doCreateCalendar() {
   let cal_name = document.getElementById("calendar-name").value;
   let cal_color = document.getElementById("calendar-color").value;
   const cal_room_resource = document.getElementById("is-room-resource").checked;
+  const cal_room_resource_email = document.getElementById("room-resource-email").value;
 
   gCalendar.name = cal_name;
   gCalendar.setProperty("color", cal_color);
@@ -279,6 +280,7 @@ function doCreateCalendar() {
   // setup readonly as default for new room resource calendar
   if (cal_room_resource) {
     gCalendar.setProperty("roomResource", true);
+    gCalendar.setProperty("roomResourceEmail", cal_room_resource_email);
     gCalendar.readOnly = true;
   }
 
