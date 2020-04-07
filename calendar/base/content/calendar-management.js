@@ -141,7 +141,6 @@ function loadCalendarManager() {
     if (calendar.readOnly) {
       item.setAttribute("calendar-readonly", "true");
     }
-    console.log("GOT ", calendar.name, " is a :", calendar.getProperty("roomResource"));
     if (calendar.getProperty("roomResource")) {
       item.setAttribute("calendar-roomResource", "true");
     }
