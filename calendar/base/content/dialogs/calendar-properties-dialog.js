@@ -14,6 +14,8 @@ var { PluralForm } = ChromeUtils.import("resource://gre/modules/PluralForm.jsm")
  */
 var gCalendar;
 
+var oldEmail;
+
 /**
  * This function gets called when the calendar properties dialog gets opened. To
  * open the window, use an object as argument. The object needs a 'calendar'
@@ -30,6 +32,7 @@ function onLoad() {
   document.getElementById("calendar-uri").value = gCalendar.uri.spec;
   document.getElementById("read-only").checked = gCalendar.readOnly;
   document.getElementById("room-resource").checked = resourceRoom;
+  oldEmail = roomResourceEmail;
   document.getElementById("calendar-room-resource-email").value = roomResourceEmail;
 
   if (gCalendar.getProperty("capabilities.username.supported") === true) {
@@ -106,7 +109,9 @@ function onAcceptDialog() {
 
   // save room resource state
   gCalendar.setProperty("roomResource", document.getElementById("room-resource").checked);
-  gCalendar.setProperty("roomResourceEmail", document.getElementById("calendar-room-resource-email").value);
+  let newEmail = document.getElementById("calendar-room-resource-email").value
+  gCalendar.setProperty("roomResourceEmail", newEmail);
+  updateContact(oldEmail, newEmail);
 
   // Save supressAlarms
   gCalendar.setProperty("suppressAlarms", !document.getElementById("fire-alarms").checked);
@@ -204,5 +209,26 @@ function initRefreshInterval() {
       separator.parentNode.insertBefore(menuitem, separator.nextElementSibling);
       menulist.selectedItem = menuitem;
     }
+  }
+}
+
+/**
+ * Updates the contact with oldEmail to have the email address specified by
+ * newEmail. Prioritizes the personal address book.
+ * @param {String} oldEmail 
+ * @param {String} newEmail 
+ */
+function updateContact(oldEmail, newEmail) {
+  let personalDirectory = GetDirectoryFromURI(kPersonalAddressbookURI);
+  let personalCard = personalDirectory.cardForEmailAddress(oldEmail);
+  if (personalCard) {
+    personalCard.setProperty("PrimaryEmail", newEmail);
+    personalDirectory.modifyCard(personalCard);
+  }
+  let collectedDirectory = GetDirectoryFromURI(kCollectedAddressbookURI);
+  let collectedCard = personalDirectory.cardForEmailAddress(oldEmail);
+  if (collectedCard) {
+    collectedCard.setProperty("PrimaryEmail", newEmail);
+    collectedDirectory.modifyCard(collectedCard);
   }
 }
