@@ -70,13 +70,13 @@ function onLoad() {
  */
 function initLocationPage() {
   checkRequired();
+  onRoomResource();
 }
 
 /**
  * Initialize the customize page
  */
 function initCustomizePage() {
-  onRoomResource();
   initNameFromURI();
   checkRequired();
 
@@ -187,7 +187,7 @@ function checkRequired() {
     // checks if room resource is on and sets advanced and error messages accordingly
     if(
       canAdvance && 
-      curPage.pageid == "customizePage" && 
+      curPage.pageid == "locationPage" && 
       document.getElementById("is-room-resource").checked
       ) {
         let [reason] = parseEmail(document.getElementById("room-resource-email").value);
