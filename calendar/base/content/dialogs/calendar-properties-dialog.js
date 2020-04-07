@@ -226,7 +226,7 @@ function updateContact(oldEmail, newEmail) {
     personalDirectory.modifyCard(personalCard);
   }
   let collectedDirectory = GetDirectoryFromURI(kCollectedAddressbookURI);
-  let collectedCard = personalDirectory.cardForEmailAddress(oldEmail);
+  let collectedCard = collectedDirectory.cardForEmailAddress(oldEmail);
   if (collectedCard) {
     collectedCard.setProperty("PrimaryEmail", newEmail);
     collectedDirectory.modifyCard(collectedCard);
