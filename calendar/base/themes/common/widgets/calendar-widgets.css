@@ -211,3 +211,20 @@ checkbox.treenode-checkbox > .checkbox-label-center-box > .checkbox-label-box > 
 #calendar-list > richlistitem[calendar-readfailed="true"] > .calendar-readstatus {
   list-style-image: url(chrome://calendar/skin/shared/icons/warn.svg);
 }
+
+#calendar-list > richlistitem > .calendar-roomResource {
+  -moz-context-properties: fill;
+  fill: currentColor;
+}
+
+#calendar-list > richlistitem[calendar-readonly="true"] > .calendar-roomResource {
+  margin: 0 2px;
+}
+
+#calendar-list > richlistitem[calendar-readfailed="true"] > .calendar-roomResource {
+  margin: 0 2px;
+}
+
+#calendar-list > richlistitem[calendar-roomResource="true"] > .calendar-roomResource {
+  list-style-image: url(chrome://calendar/skin/shared/icons/room-resource.svg);
+}

@@ -1111,11 +1111,13 @@ function onCalendarEventAttendeesListLoad() {
 function onAttendeesInputKeyPress(event, element) {
   if (event.key == "Enter" && element.value != "") {
     element.closest("calendar-event-attendees-list").returnHit(element);
+    element.closest("calendar-event-attendees-list").setAttendeeIcon(element);
   }
 }
 
 function onAttendeesInputBlur(element) {
   if (element.localName == "input") {
     element.closest("calendar-event-attendees-list").returnHit(element, true);
+    element.closest("calendar-event-attendees-list").setAttendeeIcon(element);
   }
 }

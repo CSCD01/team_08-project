@@ -36,6 +36,8 @@
   <script src="chrome://calendar/content/calendar-ui-utils.js"/>
   <script src="chrome://calendar/content/widgets/calendar-minimonth.js"/>
   <script src="chrome://calendar/content/datetimepickers/datetimepickers.js"/>
+  <!-- To search whether an attendee is a resource -->
+  <script src="chrome://messenger/content/addressbook/abCommon.js"/>
 
   <hbox align="center" pack="end">
     <spacer flex="1"/>
@@ -257,5 +259,6 @@
     </vbox>
   </hbox>
   <separator class="groove"/>
+  <label id="warning-text" value=""/>
 </dialog>
 </window>

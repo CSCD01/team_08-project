@@ -37,6 +37,8 @@
   <script src="chrome://lightning/content/lightning-calendar-properties.js"/>
   <script src="chrome://lightning/content/caldav-lightning-utils.js"/>
   <script src="chrome://lightning/content/caldav-lightning-calendar-properties.js"/>
+  <!-- imported adressbook scripts to be able to add user to address book -->
+  <script src="chrome://messenger/content/addressbook/abCommon.js"/>
 
   <description id="force-disabled-description" hidden="true">&calendarproperties.forceDisabled.label;</description>
 
@@ -138,6 +140,28 @@
         <checkbox id="read-only"
                   label="&calendarproperties.readonly.label;"
                   disable-with-calendar="true"/>
+      </html:td>
+    </html:tr>
+    <html:tr id="calendar-room-resource-row">
+      <html:th></html:th>
+      <html:td>
+        <checkbox id="room-resource"
+                  label="&calendarproperties.roomResource;"
+                  disable-with-calendar="true"/>
+      </html:td>
+    </html:tr>
+    <html:tr id="calendar-room-resource-email-row">
+      <html:th>
+        <label id="calendar-room-resource-email-label"
+               value="&calendarproperties.roomResourceEmail;"
+               disable-with-calendar="true"/>
+      </html:th>
+      <html:td>
+        <html:input id="calendar-room-resource-email"
+                    type="text"
+                    class="input-inline"
+                    disable-with-calendar="true"
+                    aria-labelledby="calendar-room-resource-email-label"/>
       </html:td>
     </html:tr>
     <html:tr id="calendar-suppressAlarms-row">

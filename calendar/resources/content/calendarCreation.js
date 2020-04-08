@@ -19,6 +19,7 @@ var errorConstants = {
   SUCCESS: 0,
   INVALID_URI: 1,
   ALREADY_EXISTS: 2,
+  INVALID_EMAIL: 3,
 };
 
 var l10nStrings = {};
@@ -30,6 +31,10 @@ l10nStrings[errorConstants.INVALID_URI] = cal.l10n.getString(
 l10nStrings[errorConstants.ALREADY_EXISTS] = cal.l10n.getString(
   "calendarCreation",
   "error.alreadyExists"
+);
+l10nStrings[errorConstants.INVALID_EMAIL] = cal.l10n.getString(
+  "calendarCreation",
+  "error.badEmail"
 );
 
 var gNotification = {};
@@ -65,12 +70,14 @@ function onLoad() {
  */
 function initLocationPage() {
   checkRequired();
+  onRoomResource();
 }
 
 /**
  * Initialize the customize page
  */
 function initCustomizePage() {
+  createContactInCA();
   initNameFromURI();
   checkRequired();
 
@@ -145,6 +152,15 @@ function onSelectProvider(type) {
 }
 
 /**
+ * Toggles the email address requirement for room/resource calendars based on checkbox
+ */
+function onRoomResource() {
+  checkRequired();
+  const hidden = !document.getElementById("is-room-resource").checked;
+  document.getElementById("room-resource-email-row").toggleAttribute("hidden", hidden);
+}
+
+/**
  * Checks if the required information is set so that the wizard can advance. On
  * an error, notifications are shown and the wizard can not be advanced.
  */
@@ -169,6 +185,20 @@ function checkRequired() {
     } else {
       gNotification.notificationbox.removeAllNotifications();
     }
+    // checks if room resource is on and sets advanced and error messages accordingly
+    if (
+      canAdvance &&
+      curPage.pageid == "locationPage" &&
+      document.getElementById("is-room-resource").checked
+    ) {
+      let [reason] = parseEmail(document.getElementById("room-resource-email").value);
+      canAdvance = reason == errorConstants.SUCCESS;
+      setNotification(reason);
+    } else {
+      gNotification.notificationbox.removeAllNotifications();
+    }
+
+
     document.querySelector("wizard").canAdvance = canAdvance;
   }
 }
@@ -225,6 +255,8 @@ function prepareCreateCalendar(event) {
 function doCreateCalendar() {
   let cal_name = document.getElementById("calendar-name").value;
   let cal_color = document.getElementById("calendar-color").value;
+  const cal_room_resource = document.getElementById("is-room-resource").checked;
+  const cal_room_resource_email = document.getElementById("room-resource-email").value;
 
   gCalendar.name = cal_name;
   gCalendar.setProperty("color", cal_color);
@@ -243,6 +275,13 @@ function doCreateCalendar() {
 
   if (!document.getElementById("fire-alarms").checked) {
     gCalendar.setProperty("suppressAlarms", true);
+  }
+
+  // setup readonly as default for new room resource calendar
+  if (cal_room_resource) {
+    gCalendar.setProperty("roomResource", true);
+    gCalendar.setProperty("roomResourceEmail", cal_room_resource_email);
+    gCalendar.readOnly = true;
   }
 
   cal.getCalendarManager().registerCalendar(gCalendar);
@@ -297,9 +336,58 @@ function parseUri(aUri) {
 }
 
 /**
+ * Parses the given email value to check if it is valid and there is not 
+ * already a contact with that email
+ *
+ * @param {string} aEmail   The string to parse as an email.
+ * @return [error, email]   |error| is the error code from errorConstants,
+ *                          |email| the confirmed valid email.
+ */
+function parseEmail(aEmail) {
+  let ret = [];
+  if (!/.@./.test(aEmail)) {
+    return [errorConstants.INVALID_EMAIL, null];
+  }
+  return [errorConstants.SUCCESS, aEmail];
+}
+
+/**
  * Disables the back button, in case we are far enough that its not possible to
  * undo.
  */
 function setCanRewindFalse() {
   document.querySelector("wizard").canRewind = false;
+}
+
+/**
+ * Creates an entry in the CollectedAddresses Address book if a room/resource calendar exists
+ */
+function createContactInCA() {
+  if (document.getElementById("is-room-resource").checked) {
+    // get variables and set addressbook address
+    const email = document.getElementById("room-resource-email").value;
+    let abCard = generateEmptyContact();
+    abCard.primaryEmail = email;
+    abCard.setProperty("isRoomResource", true);
+
+    // add to address book
+    var directory = GetDirectoryFromURI(kCollectedAddressbookURI);
+    abCard = directory.addCard(abCard);
+  }
+}
+
+/**
+ * Returns an empty contact card for the adress book
+ */
+function generateEmptyContact() {
+  let card = {displayLastNameFirst: false, generateDisplayName: true};
+  card = "arguments" in window &&
+  window.arguments.length > 0 &&
+  window.arguments[0] instanceof Ci.nsIAbCard
+    ? window.arguments[0]
+    : Cc["@mozilla.org/addressbook/cardproperty;1"].createInstance(
+        Ci.nsIAbCard
+      );
+
+  return card
 }
