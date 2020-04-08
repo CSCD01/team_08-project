@@ -1199,6 +1199,34 @@
     }
 
     /**
+     * If the value (email address) of the element is in the address book and it's marked as a room/resource, then change its icon accordingly.
+     * @param {Element} element Element to modify
+     */
+    setAttendeeIcon(element) {
+        const match = element.value.match(/[^"].*[<>@,]?.*[^"] <(.+@.+)>$/);
+        const address = match ? match[1] : element.value;
+        let isResource = false;
+
+        const collectedDirectory = GetDirectoryFromURI(kCollectedAddressbookURI);
+        const collectedCard = collectedDirectory.cardForEmailAddress(address);
+    
+        const personalDirectory = GetDirectoryFromURI(kPersonalAddressbookURI);
+        const personalCard = personalDirectory.cardForEmailAddress(address);
+    
+        if (collectedCard) {
+            isResource = isResource || !!collectedCard.getProperty("isRoomResource", false);
+        }
+
+        if (personalCard) {
+            isResource = isResource || !!personalCard.getProperty("isRoomResource", false);
+        }
+
+        if (isResource) {
+            element.closest(".addressingWidgetItem").querySelector(".usertype-icon").setAttribute("cutype", "RESOURCE");
+        }
+    }
+
+    /**
      * If the element `element` has valid headerValue then a new attendee row is created and cursor
      * is moved to the next row, else just cursor is moved to the next row.
      *
