@@ -168,7 +168,7 @@ because displayed names don't have the comma in between. -->
 <!ENTITY Addrbook.accesskey                             "B">
 <!ENTITY GeneratedName.label                            "Name">
 <!ENTITY GeneratedName.accesskey                        "N">
-<!ENTITY isRoomResource.label                           "Room or Resource">
+<!ENTITY isRoomResource.label                           "Room/Resource">
 <!ENTITY isRoomResource.accesskey                       "s">
 <!ENTITY PrimaryEmail.label                             "Email">
 <!ENTITY PrimaryEmail.accesskey                         "E">
