@@ -78,6 +78,9 @@ add_task(async () => {
         case "name":
           is(item.querySelector(".calendar-name").value, expectedValue);
           break;
+        case "roomResource":
+          is(item.querySelector(".room-resource"), expectedValue);
+          break;
       }
     }
   }
@@ -143,6 +146,7 @@ add_task(async () => {
       displayed: true,
       color: "rgb(168, 194, 225)",
       name: `Mochitest ${i}`,
+      roomResource: false
     });
   }
   checkSortOrder(0, 1, 2, 3);
@@ -266,6 +270,10 @@ add_task(async () => {
 
   calendars[1].setProperty("disabled", false);
   checkProperties(1, { disabled: false });
+
+  //Check if roomResource property is maintained when set
+  calendars[1].setProperty("roomResource", true);
+  checkProperties(1, { roomResource: true });
 
   // Test reordering calendars.
 
